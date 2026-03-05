@@ -1,0 +1,1 @@
+export class OverlayController{constructor(store){this.store=store;this.selected=[];}select(ids){this.selected=[].concat(ids||[]);}toggle(id){this.selected=this.selected.includes(id)?this.selected.filter(x=>x!==id):[...this.selected,id];}}

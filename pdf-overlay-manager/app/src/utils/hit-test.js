@@ -1,0 +1,2 @@
+import { pointInRect } from './geometry.js';
+export function hitOverlay(overlays,point){for(let i=overlays.length-1;i>=0;i--){const o=overlays[i];if(o.meta.hidden)continue;if(o.type==='measure'){const b={x:Math.min(o.geometry.a.x,o.geometry.b.x)-4,y:Math.min(o.geometry.a.y,o.geometry.b.y)-4,w:Math.abs(o.geometry.a.x-o.geometry.b.x)+8,h:Math.abs(o.geometry.a.y-o.geometry.b.y)+8};if(pointInRect(point,b))return o;}if(o.geometry.rect&&pointInRect(point,o.geometry.rect))return o;}return null;}
