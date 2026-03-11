@@ -1,0 +1,62 @@
+.app-shell{display:grid;grid-template-rows:52px 1fr 28px;height:100vh;gap:8px;padding:8px}
+.topbar{display:flex;align-items:center;gap:8px;padding:8px 12px}
+.main{display:grid;grid-template-columns:56px 1fr 340px;gap:8px;min-height:0}
+.toolbar{display:flex;flex-direction:column;gap:6px;padding:8px;overflow:auto}
+.workspace{position:relative;min-height:0;overflow:hidden}
+.canvas-host{position:absolute;inset:0;overflow:auto;border-radius:var(--radius);border:1px solid #ffffff12;background:#0f141d}
+.canvas-stack{position:relative;transform-origin:0 0}
+#pdf-canvas,#overlay-canvas{position:absolute;left:0;top:0}
+.sidebar{padding:8px;display:flex;flex-direction:column;gap:8px;overflow:auto}
+.psection{border:1px solid #ffffff14;border-radius:10px;overflow:hidden}
+.phead{padding:8px 10px;background:#1b2332;display:flex;justify-content:space-between;cursor:pointer}
+.pbody{padding:8px;display:grid;gap:8px}
+.statusbar{display:flex;align-items:center;gap:14px;padding:4px 12px}
+.list{display:grid;gap:4px;max-height:180px;overflow:auto}
+.item{padding:6px 8px;border:1px solid #ffffff14;border-radius:8px;background:#111826;cursor:pointer}
+.item.active{border-color:var(--accent);background:#1d2b42}
+.toast-wrap{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:999}
+.toast{background:#182133;border:1px solid #ffffff22;padding:8px 10px;border-radius:8px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;margin-right:auto}
+.props-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.props-grid label{display:grid;gap:4px}
+
+/* Entity Inspector */
+.ei-modal-backdrop{position:fixed;inset:0;background:#02060ecc;backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px}
+.ei-modal{width:min(96vw,1720px);height:min(94vh,1000px);display:grid;grid-template-rows:auto auto auto 1fr;gap:8px;padding:12px;position:relative}
+.ei-head,.ei-filters,.ei-table-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ei-filters{padding:6px;border:1px solid #ffffff14;border-radius:10px;background:#111827}
+.ei-body{min-height:0;display:grid;grid-template-columns:1fr 360px;gap:8px}
+.ei-grid-wrap{min-height:0;display:grid;grid-template-rows:auto 1fr;border:1px solid #ffffff1f;border-radius:10px;overflow:hidden;background:#0f1726}
+.ei-grid-head{display:grid;background:#1a2537;border-bottom:1px solid #ffffff14;position:sticky;top:0;z-index:6}
+.ei-grid-body{overflow:auto;min-height:0}
+.ei-grid-row{display:grid;border-bottom:1px solid #ffffff12}
+.ei-grid-row:hover{background:#1c2a43}
+.ei-grid-row.active{background:#223a5f}
+.ei-cell{padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-right:1px solid #ffffff10}
+.ei-head-cell{font-weight:600;color:#dbe8ff;position:relative;background:#1a2537}
+.ei-sort-btn{all:unset;cursor:pointer}
+.ei-sticky{position:sticky;background:#142037;z-index:4}
+.ei-head-cell.ei-sticky{z-index:7}
+.ei-resizer{position:absolute;right:0;top:0;width:8px;height:100%;cursor:col-resize;opacity:.45}
+.ei-actions{display:flex;gap:6px;flex-wrap:wrap}
+.ei-actions-row{flex-wrap:nowrap;white-space:nowrap}
+.ei-detail{border:1px solid #ffffff1f;border-radius:10px;padding:8px;overflow:auto;background:#0f1726}
+.ei-section{margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #ffffff12}
+.ei-section h4{margin:0 0 4px 0;color:#9cb7dd}
+.ei-json{font-size:11px;white-space:pre-wrap;word-break:break-word}
+.ei-empty{padding:20px;color:#9fb1cf}
+.ei-chip-wrap{display:flex;gap:6px;flex-wrap:wrap}
+.ei-chip{font-size:11px;padding:2px 8px;border-radius:999px;background:#22344d;border:1px solid #35506f;color:#d4e8ff}
+.ei-col-chooser{position:absolute;right:16px;top:56px;z-index:20;padding:10px;width:360px;max-height:70vh;overflow:auto}
+.ei-col-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+
+.ei-modal-backdrop[data-density='compact'] .ei-cell{padding:4px 6px;font-size:12px}
+.ei-modal-backdrop[data-density='comfortable'] .ei-cell{padding:8px 10px;font-size:13px}
+
+
+.ei-grid-head,.ei-grid-row{align-items:stretch}
+.ei-grid-body{contain:layout paint}
+.ei-grid-row .ei-cell{line-height:1.3;min-height:32px;display:flex;align-items:center}
+.ei-head-cell{min-height:34px}
+.ei-filters .input{min-width:120px}
+.ei-table-tools{border:1px solid #ffffff12;border-radius:10px;background:#101b2a;padding:6px}
