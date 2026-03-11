@@ -1,0 +1,3 @@
+export function h(tag, props={}, ...children){const el=document.createElement(tag);for(const [k,v] of Object.entries(props||{})){if(k.startsWith('on')&&typeof v==='function'){el.addEventListener(k.slice(2).toLowerCase(),v);continue;}if(['value','checked','disabled'].includes(k)){el[k]=v;continue;}if(k==='class')el.className=v; else if(k==='dataset')Object.assign(el.dataset,v); else el.setAttribute(k,v);}for(const c of children.flat()){if(c==null)continue;el.append(c.nodeType?c:document.createTextNode(String(c)));}return el;}
+export const $ = (s,root=document)=>root.querySelector(s);
+export const $$ = (s,root=document)=>[...root.querySelectorAll(s)];

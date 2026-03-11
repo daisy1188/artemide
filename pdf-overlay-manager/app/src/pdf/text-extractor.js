@@ -1,0 +1,1 @@
+export async function extractPageText(pdfDoc,pageNo){const page=await pdfDoc.getPage(pageNo);const content=await page.getTextContent();return content.items.map((it,i)=>({id:`${pageNo}-${i}`,text:it.str,bbox:{x:it.transform[4],y:it.transform[5]-it.height,w:it.width,h:it.height},page:pageNo}));}
