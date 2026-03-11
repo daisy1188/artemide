@@ -17,6 +17,7 @@ export const defaultProject=()=>({
     showHiddenMasks:true,
     filters:{},
     columns:[],
-    density:'compact'
+    density:'compact',
+    inspectorUi:{}
   }
 });

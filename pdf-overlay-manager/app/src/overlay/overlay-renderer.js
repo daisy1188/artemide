@@ -5,7 +5,7 @@ const toViewportPoint = (p, scale) => ({ x: p.x * scale, y: p.y * scale });
 
 function drawEntityDebug(ctx, entityDebug, scale){
   if(!entityDebug) return;
-  const { entitiesById = {}, selectedIds = [], hiddenIds = [], pinnedIds = [], showPins = true, showHiddenMasks = true } = entityDebug;
+  const { entitiesById = {}, selectedIds = [], hiddenIds = [], pinnedIds = [], hoveredIds = [], showPins = true, showHiddenMasks = true } = entityDebug;
 
   if (showHiddenMasks) {
     for (const id of hiddenIds) {
@@ -19,6 +19,17 @@ function drawEntityDebug(ctx, entityDebug, scale){
       ctx.strokeRect(r.x,r.y,r.w,r.h);
       ctx.setLineDash([]);
     }
+  }
+
+
+  for (const id of hoveredIds) {
+    const e = entitiesById[id];
+    if (!e || e.x == null || e.y == null || e.width == null || e.height == null) continue;
+    const r = toViewportRect({x:e.x,y:e.y,w:e.width,h:e.height}, scale);
+    ctx.fillStyle='rgba(101,182,255,.18)';
+    ctx.fillRect(r.x,r.y,r.w,r.h);
+    ctx.strokeStyle='#65b6ff';
+    ctx.strokeRect(r.x,r.y,r.w,r.h);
   }
 
   for (const id of selectedIds) {

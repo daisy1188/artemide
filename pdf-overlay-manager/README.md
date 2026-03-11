@@ -48,4 +48,4 @@ py -m http.server 8000
 - Toolbar sinistra: pulsante 🐞 apre l'inspector.
 - Scope: pagina corrente o documento intero.
 - Tabella con ricerca, filtri, ordinamento, selezione multipla, paginazione e export CSV/JSON.
-- Azioni bidirezionali con tavola: highlight, zoom-to, hide/show (mask bbox), pin/unpin.
+- Azioni bidirezionali con tavola: hover highlight, zoom-to, hide/show (mask bbox), pin/unpin anche massivo su selezione.
