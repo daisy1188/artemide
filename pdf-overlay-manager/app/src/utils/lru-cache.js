@@ -1,0 +1,1 @@
+export class LRUCache{constructor(limit=8){this.limit=limit;this.map=new Map()}get(k){if(!this.map.has(k))return null;const v=this.map.get(k);this.map.delete(k);this.map.set(k,v);return v;}set(k,v){if(this.map.has(k))this.map.delete(k);this.map.set(k,v);if(this.map.size>this.limit)this.map.delete(this.map.keys().next().value)}clear(){this.map.clear()}}
