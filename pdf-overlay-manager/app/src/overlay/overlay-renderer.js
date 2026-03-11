@@ -47,7 +47,9 @@ function drawEntityDebug(ctx, entityDebug, scale){
     for (const id of pinnedIds) {
       const e = entitiesById[id];
       if (!e) continue;
-      const c = toViewportPoint({x:e.centerX ?? e.x ?? 0,y:e.centerY ?? e.y ?? 0}, scale);
+      const px = e.centerX ?? (e.x != null && e.width != null ? e.x + e.width/2 : e.x ?? 0);
+      const py = e.centerY ?? (e.y != null && e.height != null ? e.y + e.height/2 : e.y ?? 0);
+      const c = toViewportPoint({x:px,y:py}, scale);
       ctx.fillStyle='#ffbe5c';
       ctx.beginPath(); ctx.arc(c.x,c.y,5,0,Math.PI*2); ctx.fill();
       ctx.strokeStyle='#10131a'; ctx.stroke();

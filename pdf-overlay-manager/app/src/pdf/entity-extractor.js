@@ -1,10 +1,31 @@
 const normColor = (v) => Array.isArray(v) ? `rgb(${v.map(n=>Math.round((n<=1?n*255:n))).join(',')})` : null;
 
+function bboxFromCoords(coords=[]){
+  if (!coords.length) return null;
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  for(let i=0;i<coords.length;i+=2){
+    const x=Number(coords[i]); const y=Number(coords[i+1]);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    minX=Math.min(minX,x); minY=Math.min(minY,y); maxX=Math.max(maxX,x); maxY=Math.max(maxY,y);
+  }
+  if (!Number.isFinite(minX)) return null;
+  return { x:minX, y:minY, w:Math.max(0,maxX-minX), h:Math.max(0,maxY-minY) };
+}
+
+function pathLength(coords=[]){
+  let len=0;
+  for(let i=2;i<coords.length;i+=2){
+    const x1=Number(coords[i-2]), y1=Number(coords[i-1]);
+    const x2=Number(coords[i]), y2=Number(coords[i+1]);
+    if ([x1,y1,x2,y2].every(Number.isFinite)) len += Math.hypot(x2-x1,y2-y1);
+  }
+  return len || null;
+}
+
 export async function extractPageEntities(pdfDoc, pageNo, pdfjs){
   const page = await pdfDoc.getPage(pageNo);
   const entities = [];
 
-  // Text entities (high confidence)
   try {
     const txt = await page.getTextContent();
     txt.items.forEach((it, i) => {
@@ -26,6 +47,7 @@ export async function extractPageEntities(pdfDoc, pageNo, pdfjs){
         strokeColor: null,
         fillColor: null,
         strokeWidth: null,
+        strokeStyle: null,
         opacity: null,
         visible: true,
         pinned: false,
@@ -46,16 +68,14 @@ export async function extractPageEntities(pdfDoc, pageNo, pdfjs){
     // ignore
   }
 
-  // Operator-level entities (medium confidence)
   try {
     const opList = await page.getOperatorList();
     const OPS = pdfjs.OPS || {};
     for (let i = 0; i < opList.fnArray.length; i++) {
       const fn = opList.fnArray[i];
       const args = opList.argsArray[i] || [];
-      const eid = `p${pageNo}-op-${i}`;
       const rec = {
-        entityId: eid,
+        entityId: `p${pageNo}-op-${i}`,
         page: pageNo,
         type: 'unknown',
         subtype: 'operator',
@@ -67,6 +87,7 @@ export async function extractPageEntities(pdfDoc, pageNo, pdfjs){
         strokeColor: null,
         fillColor: null,
         strokeWidth: null,
+        strokeStyle: null,
         opacity: null,
         visible: true,
         pinned: false,
@@ -103,12 +124,21 @@ export async function extractPageEntities(pdfDoc, pageNo, pdfjs){
         rec.label = 'glyph run';
         rec.confidence = 0.7;
       } else if (fn === OPS.constructPath) {
+        const [ops = [], coords = []] = args;
+        const bb = bboxFromCoords(coords);
         rec.type = 'path';
-        rec.subtype = 'openPath';
+        rec.subtype = ops.includes(OPS.closePath) ? 'closedPath' : 'openPath';
         rec.label = 'path';
         rec.confidence = 0.7;
-        const [ops = [], coords = []] = args;
         rec.pointCount = Math.floor((coords?.length || 0) / 2);
+        rec.pathClosed = rec.subtype === 'closedPath';
+        rec.length = pathLength(coords);
+        if (bb) {
+          rec.x = bb.x; rec.y = bb.y; rec.width = bb.w; rec.height = bb.h;
+          rec.centerX = bb.x + bb.w/2; rec.centerY = bb.y + bb.h/2;
+        }
+        if (rec.pointCount === 2) { rec.type = 'line'; rec.subtype='segment'; }
+        if (rec.pointCount > 2) { rec.type = 'polylineLike'; }
         rec.raw.pathOps = ops;
       } else if (fn === OPS.rectangle) {
         rec.type = 'rect';
@@ -118,7 +148,7 @@ export async function extractPageEntities(pdfDoc, pageNo, pdfjs){
         const [x,y,w,h] = args;
         rec.x = x ?? null; rec.y = y ?? null; rec.width = w ?? null; rec.height = h ?? null;
         if (w != null && h != null && x != null && y != null) {
-          rec.centerX = x + w/2; rec.centerY = y + h/2;
+          rec.centerX = x + w/2; rec.centerY = y + h/2; rec.area = Math.abs(w*h);
         }
       } else if (fn === OPS.setStrokeRGBColor || fn === OPS.setFillRGBColor) {
         rec.type = 'style';

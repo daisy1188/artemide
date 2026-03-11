@@ -19,6 +19,7 @@ import { extractPageEntities } from './pdf/entity-extractor.js';
 import { createEntityInspector } from './ui/entity-inspector.js';
 import { bindShortcuts } from './ui/shortcuts.js';
 import { projectToCsv, entitiesToCsv } from './utils/export.js';
+import { getEntityInspectorState, getEntitySelectedIds, getEntityHiddenIds, getEntityPinnedIds, setFromIds, getRepresentativePoint } from './state/selectors.js';
 
 export async function bootstrap(root){
   const store=createStore();
@@ -44,11 +45,11 @@ export async function bootstrap(root){
   const download=(blob,name)=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
   const filePick=(accept)=>new Promise((res)=>{const i=document.createElement('input');i.type='file';i.accept=accept;i.onchange=()=>res(i.files[0]);i.click();});
 
-  function getEntityState(){ return store.getState().entityInspector || {}; }
+  function getEntityState(){ return getEntityInspectorState(store.getState()); }
   function setEntityState(patch, historyPush=false){ store.setState(s=>{s.entityInspector={...(s.entityInspector||{}),...patch};return s;},{historyPush}); }
-  const hiddenSet = () => new Set(getEntityState().hiddenIds || []);
-  const pinnedSet = () => new Set(getEntityState().pinnedIds || []);
-  const selectedSet = () => new Set(getEntityState().selectedIds || []);
+  const hiddenSet = () => setFromIds(getEntityHiddenIds(store.getState()));
+  const pinnedSet = () => setFromIds(getEntityPinnedIds(store.getState()));
+  const selectedSet = () => setFromIds(getEntitySelectedIds(store.getState()));
 
   function setSelectedEntityIds(ids, persist=true){ if (persist) setEntityState({ selectedIds: [...new Set(ids)] }, false); redraw(); }
   function toggleEntitySet(id, field, force){ const curr = new Set(getEntityState()[field] || []); const willSet = force == null ? !curr.has(id) : !!force; if (willSet) curr.add(id); else curr.delete(id); setEntityState({ [field]: [...curr] }, false); redraw(); }
@@ -57,8 +58,9 @@ export async function bootstrap(root){
   function zoomToEntity(rec){
     if (!rec || rec.page == null) return;
     if (viewer.pageNo !== rec.page) { viewer.pageNo = rec.page; viewer.render().then(redraw); }
-    const cx = rec.centerX ?? rec.x ?? 0;
-    const cy = rec.centerY ?? rec.y ?? 0;
+    const rep = getRepresentativePoint(rec);
+    const cx = rep.x;
+    const cy = rep.y;
     host.scrollLeft = Math.max(0, cx * currentScale() - host.clientWidth / 2);
     host.scrollTop = Math.max(0, cy * currentScale() - host.clientHeight / 2);
   }
@@ -223,7 +225,11 @@ export async function bootstrap(root){
     zoomTo: zoomToEntity,
     exportFilteredCsv:(rows)=>download(new Blob([entitiesToCsv(rows)],{type:'text/csv'}),'entities.filtered.csv'),
     exportFilteredJson:(rows)=>download(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),'entities.filtered.json'),
+    exportSelectedJson:(rows)=>download(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),'entities.selected.json'),
     exportAllJson:(rows)=>download(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),'entities.full.json'),
+    copySelectedSummary:(rows)=>navigator.clipboard?.writeText(rows.map(r=>`${r.entityId} | p${r.page} | ${r.type}/${r.subtype||'—'} | ${r.label||r.text||'—'}`).join('
+')).then(()=>toast('Summary copied')).catch(()=>toast('Clipboard non disponibile','warn')),
+    copySelectedRaw:(rows)=>navigator.clipboard?.writeText(JSON.stringify(rows.map(r=>r.raw ?? r),null,2)).then(()=>toast('Raw copied')).catch(()=>toast('Clipboard non disponibile','warn')),
     persistUi:(ui)=>setEntityState({ inspectorUi: ui }, false)
   });
 
