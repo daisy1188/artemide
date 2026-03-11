@@ -227,8 +227,7 @@ export async function bootstrap(root){
     exportFilteredJson:(rows)=>download(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),'entities.filtered.json'),
     exportSelectedJson:(rows)=>download(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),'entities.selected.json'),
     exportAllJson:(rows)=>download(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),'entities.full.json'),
-    copySelectedSummary:(rows)=>navigator.clipboard?.writeText(rows.map(r=>`${r.entityId} | p${r.page} | ${r.type}/${r.subtype||'—'} | ${r.label||r.text||'—'}`).join('
-')).then(()=>toast('Summary copied')).catch(()=>toast('Clipboard non disponibile','warn')),
+    copySelectedSummary:(rows)=>navigator.clipboard?.writeText(rows.map(r=>`${r.entityId} | p${r.page} | ${r.type}/${r.subtype||'—'} | ${r.label||r.text||'—'}`).join('\n')).then(()=>toast('Summary copied')).catch(()=>toast('Clipboard non disponibile','warn')),
     copySelectedRaw:(rows)=>navigator.clipboard?.writeText(JSON.stringify(rows.map(r=>r.raw ?? r),null,2)).then(()=>toast('Raw copied')).catch(()=>toast('Clipboard non disponibile','warn')),
     persistUi:(ui)=>setEntityState({ inspectorUi: ui }, false)
   });
