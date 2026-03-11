@@ -1,5 +1,5 @@
 export const defaultProject=()=>({
-  version:'1.0',
+  version:'1.1',
   ui:{collapsed:{},showTextBoxes:false,snap:false,grid:10},
   measurePrefs:{unit:'px',ratio:1},
   layers:[{id:'layer-default',name:'Default',visible:true,locked:false}],
@@ -8,4 +8,15 @@ export const defaultProject=()=>({
   cropByPage:{},
   excludeVisible:true,
   textIndex:{},
+  entityInspector:{
+    scope:'current',
+    selectedIds:[],
+    hiddenIds:[],
+    pinnedIds:[],
+    showPins:true,
+    showHiddenMasks:true,
+    filters:{},
+    columns:[],
+    density:'compact'
+  }
 });

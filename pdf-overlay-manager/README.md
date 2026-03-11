@@ -42,3 +42,10 @@ py -m http.server 8000
 - `docs/ARCHITECTURE.md`
 - `docs/USER_GUIDE.md`
 - `docs/DATA_MODEL.md`
+
+
+## Entity Inspector / PDF Entity Debugger
+- Toolbar sinistra: pulsante 🐞 apre l'inspector.
+- Scope: pagina corrente o documento intero.
+- Tabella con ricerca, filtri, ordinamento, selezione multipla, paginazione e export CSV/JSON.
+- Azioni bidirezionali con tavola: highlight, zoom-to, hide/show (mask bbox), pin/unpin.

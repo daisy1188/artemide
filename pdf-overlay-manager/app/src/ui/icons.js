@@ -1,1 +1,1 @@
-export const icons={eye:'👁',lock:'🔒',layer:'📚',box:'▭',note:'📝',measure:'📏',crop:'✂️',exclude:'⬜',select:'🖱',pan:'✋'};
+export const icons={eye:'👁',lock:'🔒',layer:'📚',box:'▭',note:'📝',measure:'📏',crop:'✂️',exclude:'⬜',select:'🖱',pan:'✋',inspector:'🐞'};
